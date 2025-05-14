@@ -31,6 +31,21 @@ public class Manager implements TaskManager {
     }
 
     @Override
+    public void deleteAllTasks() {
+
+    }
+
+    @Override
+    public void deleteAllEpics() {
+
+    }
+
+    @Override
+    public void deleteAllSubTasks() {
+
+    }
+
+    @Override
     public Task createTask(Task task) {
         if (task == null) {
             return null;
@@ -94,5 +109,30 @@ public class Manager implements TaskManager {
             task.setStatus(TaskStatus.NEW);
         }
         tasks.put(task.getId(), task);
+    }
+
+    @Override
+    public void updateEpicTask(EpicTask epicTask) {
+
+    }
+
+    @Override
+    public void updateSubTask(SubTask subTask) {
+
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+
+    }
+
+    @Override
+    public void deleteSubTaskById(int id) {
+
     }
 }
