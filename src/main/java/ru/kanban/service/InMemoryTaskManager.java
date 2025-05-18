@@ -1,19 +1,23 @@
 package ru.kanban.service;
 
-import ru.kanban.model.EpicTask;
-import ru.kanban.model.Task;
-import ru.kanban.model.SubTask;
-import ru.kanban.model.TaskStatus;
-import ru.kanban.service.TaskManager;
+import ru.kanban.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Manager implements TaskManager {
-    protected HashMap<Integer, Task> tasks;
-    protected HashMap<Integer, EpicTask> epics;
-    protected HashMap<Integer, SubTask> subTasks;
+public class InMemoryTaskManager implements TaskManager {
+    private Map<Integer, Task> tasks;
+    private Map<Integer, EpicTask> epics;
+    private Map<Integer, SubTask> subTasks;
+    private int generateId = 0;
+
+    public InMemoryTaskManager() {
+        this.tasks = new HashMap<>();
+        this.epics = new HashMap<>();
+        this.subTasks = new HashMap<>();
+    }
 
     @Override
     public List<Task> getAllTasks() {
@@ -32,29 +36,27 @@ public class Manager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-
+        tasks.clear();
     }
 
     @Override
     public void deleteAllEpics() {
-
+        epics.clear();
     }
 
     @Override
     public void deleteAllSubTasks() {
-
+        subTasks.clear();
     }
 
     @Override
     public Task createTask(Task task) {
-        if (task == null) {
-            return null;
-        }
-        tasks.put(task.getId(), task);
-        return task;
+       if (task.getTaskType() == TaskType.TASK) {
+            return addTask(task);
+       }
+       return null;
     }
 
-    @Override
     public EpicTask createEpicTask(EpicTask epicTask) {
         if (epicTask == null) {
             return null;
@@ -63,7 +65,6 @@ public class Manager implements TaskManager {
         return epicTask;
     }
 
-    @Override
     public SubTask createSubTask(SubTask subTask) {
         if (subTask == null) {
             return null;
@@ -81,7 +82,6 @@ public class Manager implements TaskManager {
         return task;
     }
 
-    @Override
     public EpicTask getEpicById(int id) {
         EpicTask epic = epics.get(id);
         if (epic == null) {
@@ -90,7 +90,6 @@ public class Manager implements TaskManager {
         return epic;
     }
 
-    @Override
     public SubTask getSubTaskById(int id) {
         SubTask subTask = subTasks.get(id);
         if (subTask == null) {
@@ -112,27 +111,17 @@ public class Manager implements TaskManager {
     }
 
     @Override
-    public void updateEpicTask(EpicTask epicTask) {
-
-    }
-
-    @Override
-    public void updateSubTask(SubTask subTask) {
-
-    }
-
-    @Override
     public void deleteTaskById(int id) {
 
     }
 
-    @Override
-    public void deleteEpicById(int id) {
-
+    private Task addTask(Task task) {
+        task.setId(generateId());
+        tasks.put(task.getId(), task);
+        return task;
     }
 
-    @Override
-    public void deleteSubTaskById(int id) {
-
+    private int generateId() {
+        return ++generateId;
     }
 }

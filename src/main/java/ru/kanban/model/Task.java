@@ -20,6 +20,13 @@ public class Task {
         this.taskType = taskType;
     }
 
+    public Task(String name, String description, TaskStatus status, TaskType taskType) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.taskType = taskType;
+    }
+
     public int getId() {
         return id;
     }

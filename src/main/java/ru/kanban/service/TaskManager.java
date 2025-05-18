@@ -17,18 +17,10 @@ public interface TaskManager {
     void deleteAllSubTasks();
 
     Task getTaskById(int id);
-    EpicTask getEpicById(int id);
-    SubTask getSubTaskById(int id);
 
     Task createTask(Task task);
-    EpicTask createEpicTask(EpicTask epicTask);
-    SubTask createSubTask(SubTask subTask);
 
     void updateTask(Task task);
-    void updateEpicTask(EpicTask epicTask);
-    void updateSubTask(SubTask subTask);
 
     void deleteTaskById(int id);
-    void deleteEpicById(int id);
-    void deleteSubTaskById(int id);
 }
