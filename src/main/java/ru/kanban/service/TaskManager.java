@@ -3,18 +3,15 @@ package ru.kanban.service;
 import ru.kanban.model.EpicTask;
 import ru.kanban.model.Task;
 import ru.kanban.model.SubTask;
+import ru.kanban.model.TaskType;
 
 import java.util.List;
 
 public interface TaskManager {
 
-    List<Task> getAllTasks();
-    List<EpicTask> getAllEpicTasks();
-    List<SubTask> getAllSubTasks();
+    List<Task> getAllTasksByType(TaskType type);
 
-    void deleteAllTasks();
-    void deleteAllEpics();
-    void deleteAllSubTasks();
+    void deleteAllTasksByType(TaskType type);
 
     Task getTaskById(int id);
 

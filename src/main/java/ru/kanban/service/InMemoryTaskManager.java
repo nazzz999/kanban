@@ -1,5 +1,6 @@
 package ru.kanban.service;
 
+import ru.kanban.exception.ValidationException;
 import ru.kanban.model.*;
 
 import java.util.ArrayList;
@@ -7,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ru.kanban.util.Constants.INCORRECT_TASK_TYPE_MESSAGE;
+
 public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, EpicTask> epics;
     private Map<Integer, SubTask> subTasks;
-    private int generateId = 0;
+    private int generateId = 1;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -20,33 +23,35 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values());
+    public List<Task> getAllTasksByType(TaskType type) {
+        switch (type) {
+            case TASK -> {
+                return new ArrayList<>(tasks.values());
+            }
+            case SUB_TASK -> {
+                return new ArrayList<>(subTasks.values());
+            }
+            case EPIC_TASK -> {
+                return new ArrayList<>(epics.values());
+            }
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
     }
 
     @Override
-    public List<EpicTask> getAllEpicTasks() {
-        return new ArrayList<>(epics.values());
-    }
-
-    @Override
-    public List<SubTask> getAllSubTasks() {
-        return new ArrayList<>(subTasks.values());
-    }
-
-    @Override
-    public void deleteAllTasks() {
-        tasks.clear();
-    }
-
-    @Override
-    public void deleteAllEpics() {
-        epics.clear();
-    }
-
-    @Override
-    public void deleteAllSubTasks() {
-        subTasks.clear();
+    public void deleteAllTasksByType(TaskType type) {
+        switch (type) {
+            case TASK -> {
+                tasks.clear();
+            }
+            case EPIC_TASK -> {
+                epics.clear();
+            }
+            case SUB_TASK -> {
+                subTasks.clear();
+            }
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
     }
 
     @Override
@@ -122,6 +127,6 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private int generateId() {
-        return ++generateId;
+        return generateId++;
     }
 }
