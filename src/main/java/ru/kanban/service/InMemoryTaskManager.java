@@ -3,10 +3,7 @@ package ru.kanban.service;
 import ru.kanban.exception.ValidationException;
 import ru.kanban.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ru.kanban.util.Constants.INCORRECT_TASK_TYPE_MESSAGE;
 
@@ -55,27 +52,41 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(Task task) {
-       if (task.getTaskType() == TaskType.TASK) {
-            return addTask(task);
-       }
-       return null;
+    public Optional<Task> createTask(Task task) {
+        TaskType type = task.getType();
+        switch (type) {
+            case TASK -> {
+                return Optional.of(addTask(task));
+            }
+            case SUB_TASK -> {
+                return createSubTask(task);
+            }
+            case EPIC_TASK -> {
+                return createEpicTask(task);
+            }
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
     }
 
-    public EpicTask createEpicTask(EpicTask epicTask) {
-        if (epicTask == null) {
-            return null;
-        }
+    private Optional<Task> createEpicTask(Task task) {
+        EpicTask epicTask = (EpicTask) task;
+        epicTask.setId(generateId++);
         epics.put(epicTask.getId(), epicTask);
-        return epicTask;
+        epicTask.updateStatus();
+        return Optional.of(epicTask);
     }
 
-    public SubTask createSubTask(SubTask subTask) {
-        if (subTask == null) {
-            return null;
+    private Optional<Task> createSubTask(Task task) {
+        SubTask subTask = (SubTask) task;
+        EpicTask epicTask = subTask.getEpic();
+        if (epics.containsKey(epicTask.getId())) {
+            subTask.setId(generateId++);
+            epicTask.addSubTask(subTask);
+            subTasks.put(subTask.getId(), subTask);
+            epicTask.updateStatus();
+            return Optional.of(subTask);
         }
-        subTasks.put(subTask.getId(), subTask);
-        return subTask;
+        return Optional.empty();
     }
 
     @Override

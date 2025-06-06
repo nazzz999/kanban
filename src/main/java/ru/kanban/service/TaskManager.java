@@ -6,18 +6,19 @@ import ru.kanban.model.SubTask;
 import ru.kanban.model.TaskType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
 
-    List<Task> getAllTasksByType(TaskType type);
+    Optional<Task> createTask(Task task);
 
-    void deleteAllTasksByType(TaskType type);
+    List<Task> getAllTasksByType(TaskType type);
 
     Task getTaskById(int id);
 
-    Task createTask(Task task);
-
-    void updateTask(Task task);
+    void deleteAllTasksByType(TaskType type);
 
     void deleteTaskById(int id);
+
+    void updateTask(Task task);
 }

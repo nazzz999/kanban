@@ -3,18 +3,18 @@ package ru.kanban.model;
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private int epic;
+    private EpicTask epic;
 
-    public SubTask(int id, String name, String description, TaskStatus status, TaskType taskType, int epic) {
+    public SubTask(int id, String name, String description, TaskStatus status, TaskType taskType, EpicTask epic) {
         super(id, name, description, status, taskType);
         this.epic = epic;
     }
 
-    public int getEpic() {
+    public EpicTask getEpic() {
         return epic;
     }
 
-    public void setEpic(int epic) {
+    public void setEpic(EpicTask epic) {
         this.epic = epic;
     }
 
