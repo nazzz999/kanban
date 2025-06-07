@@ -47,6 +47,9 @@ public class InMemoryTaskManager implements TaskManager {
             }
             case SUB_TASK -> {
                 subTasks.clear();
+                for (EpicTask epicTask : epics.values()) {
+                    epicTask.updateStatus();
+                }
             }
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
@@ -57,7 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
         TaskType type = task.getType();
         switch (type) {
             case TASK -> {
-                return Optional.of(addTask(task));
+                return addTask(task);
             }
             case SUB_TASK -> {
                 return createSubTask(task);
@@ -67,27 +70,6 @@ public class InMemoryTaskManager implements TaskManager {
             }
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
-    }
-
-    private Optional<Task> createEpicTask(Task task) {
-        EpicTask epicTask = (EpicTask) task;
-        epicTask.setId(generateId++);
-        epics.put(epicTask.getId(), epicTask);
-        epicTask.updateStatus();
-        return Optional.of(epicTask);
-    }
-
-    private Optional<Task> createSubTask(Task task) {
-        SubTask subTask = (SubTask) task;
-        EpicTask epicTask = subTask.getEpic();
-        if (epics.containsKey(epicTask.getId())) {
-            subTask.setId(generateId++);
-            epicTask.addSubTask(subTask);
-            subTasks.put(subTask.getId(), subTask);
-            epicTask.updateStatus();
-            return Optional.of(subTask);
-        }
-        return Optional.empty();
     }
 
     @Override
@@ -132,10 +114,31 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    private Task addTask(Task task) {
+    private Optional<Task> addTask(Task task) {
         task.setId(generateId());
         tasks.put(task.getId(), task);
-        return task;
+        return Optional.of(task);
+    }
+
+    private Optional<Task> createEpicTask(Task task) {
+        EpicTask epicTask = (EpicTask) task;
+        epicTask.setId(generateId++);
+        epics.put(epicTask.getId(), epicTask);
+        epicTask.updateStatus();
+        return Optional.of(epicTask);
+    }
+
+    private Optional<Task> createSubTask(Task task) {
+        SubTask subTask = (SubTask) task;
+        EpicTask epicTask = subTask.getEpic();
+        if (epics.containsKey(epicTask.getId())) {
+            subTask.setId(generateId++);
+            epicTask.addSubTask(subTask);
+            subTasks.put(subTask.getId(), subTask);
+            epicTask.updateStatus();
+            return Optional.of(subTask);
+        }
+        return Optional.empty();
     }
 
     private int generateId() {
