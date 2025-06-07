@@ -43,6 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             case EPIC_TASK -> {
                 epics.clear();
+                subTasks.clear();
             }
             case SUB_TASK -> {
                 subTasks.clear();
