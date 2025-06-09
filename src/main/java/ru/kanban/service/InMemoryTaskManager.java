@@ -73,6 +73,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public Task getTaskByIdAndType(Task task) {
+        TaskType type = task.getType();
+        switch (type) {
+            case TASK -> {
+                return getTaskById(task.getId());
+            }
+            case SUB_TASK -> {
+                return getSubTaskById(task.getId());
+            }
+            case EPIC_TASK -> {
+                return getEpicById(task.getId());
+            }
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
+    }
+
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
         if (task == null) {
@@ -110,8 +126,32 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTaskById(int id) {
+    public Task deleteTaskByIdAndType(Task task) {
+        TaskType type = task.getType();
+        switch (type) {
+            case TASK -> {
+                return deleteTaskById(task.getId());
+            }
+            case SUB_TASK -> {
+                return deleteSubTaskId(task.getId());
+            }
+            case EPIC_TASK -> {
+                return deleteEpicTaskId(task.getId());
+            }
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
+    }
 
+    public Task deleteTaskById(int id) {
+        return tasks.remove(id);
+    }
+
+    public SubTask deleteSubTaskId(int id) {
+        return subTasks.remove(id);
+    }
+
+    public EpicTask deleteEpicTaskId(int id) {
+        return epics.remove(id);
     }
 
     private Optional<Task> addTask(Task task) {

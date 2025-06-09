@@ -1,6 +1,5 @@
 package ru.kanban.service;
 
-import ru.kanban.model.EpicTask;
 import ru.kanban.model.Task;
 import ru.kanban.model.SubTask;
 import ru.kanban.model.TaskType;
@@ -14,11 +13,11 @@ public interface TaskManager {
 
     List<Task> getAllTasksByType(TaskType type);
 
-    Task getTaskById(int id);
+    Task getTaskByIdAndType(Task task);
 
     void deleteAllTasksByType(TaskType type);
 
-    void deleteTaskById(int id);
+    Task deleteTaskByIdAndType(Task task);
 
     void updateTask(Task task);
 }
