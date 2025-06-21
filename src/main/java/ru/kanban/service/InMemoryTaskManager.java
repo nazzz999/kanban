@@ -89,30 +89,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private Task getTaskById(int id) {
-        Task task = tasks.get(id);
-        if (task == null) {
-            return null;
-        }
-        return task;
-    }
-
-    private EpicTask getEpicById(int id) {
-        EpicTask epic = epics.get(id);
-        if (epic == null) {
-            return null;
-        }
-        return epic;
-    }
-
-    private SubTask getSubTaskById(int id) {
-        SubTask subTask = subTasks.get(id);
-        if (subTask == null) {
-            return null;
-        }
-        return subTask;
-    }
-
     @Override
     public void updateTask(Task task) {
         if (task == null) {
@@ -126,32 +102,31 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task deleteTaskByIdAndType(Task task) {
-        TaskType type = task.getType();
+    public void deleteTaskByIdAndType(int id, TaskType type) {
         switch (type) {
             case TASK -> {
-                return deleteTaskById(task.getId());
+                deleteTaskById(id);
             }
             case SUB_TASK -> {
-                return deleteSubTaskId(task.getId());
+                deleteSubTaskId(id);
             }
             case EPIC_TASK -> {
-                return deleteEpicTaskId(task.getId());
+                deleteEpicTaskId(id);
             }
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
     }
 
-    private Task deleteTaskById(int id) {
-        return tasks.remove(id);
+    private void deleteTaskById(int id) {
+        tasks.remove(id);
     }
 
-    private SubTask deleteSubTaskId(int id) {
-        return subTasks.remove(id);
+    private void deleteSubTaskId(int id) {
+        subTasks.remove(id);
     }
 
-    private EpicTask deleteEpicTaskId(int id) {
-        return epics.remove(id);
+    private void deleteEpicTaskId(int id) {
+        epics.remove(id);
     }
 
     private Optional<Task> addTask(Task task) {
@@ -184,4 +159,29 @@ public class InMemoryTaskManager implements TaskManager {
     private int generateId() {
         return generateId++;
     }
+
+    private Task getTaskById(int id) {
+        Task task = tasks.get(id);
+        if (task == null) {
+            return null;
+        }
+        return task;
+    }
+
+    private EpicTask getEpicById(int id) {
+        EpicTask epic = epics.get(id);
+        if (epic == null) {
+            return null;
+        }
+        return epic;
+    }
+
+    private SubTask getSubTaskById(int id) {
+        SubTask subTask = subTasks.get(id);
+        if (subTask == null) {
+            return null;
+        }
+        return subTask;
+    }
+
 }

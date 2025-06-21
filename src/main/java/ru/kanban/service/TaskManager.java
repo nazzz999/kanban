@@ -17,7 +17,7 @@ public interface TaskManager {
 
     void deleteAllTasksByType(TaskType type);
 
-    Task deleteTaskByIdAndType(Task task);
+    void deleteTaskByIdAndType(int id,TaskType type);
 
     void updateTask(Task task);
 }
