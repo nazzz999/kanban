@@ -89,7 +89,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public Task getTaskById(int id) {
+    private Task getTaskById(int id) {
         Task task = tasks.get(id);
         if (task == null) {
             return null;
@@ -97,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
         return task;
     }
 
-    public EpicTask getEpicById(int id) {
+    private EpicTask getEpicById(int id) {
         EpicTask epic = epics.get(id);
         if (epic == null) {
             return null;
@@ -105,7 +105,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epic;
     }
 
-    public SubTask getSubTaskById(int id) {
+    private SubTask getSubTaskById(int id) {
         SubTask subTask = subTasks.get(id);
         if (subTask == null) {
             return null;
@@ -142,15 +142,15 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public Task deleteTaskById(int id) {
+    private Task deleteTaskById(int id) {
         return tasks.remove(id);
     }
 
-    public SubTask deleteSubTaskId(int id) {
+    private SubTask deleteSubTaskId(int id) {
         return subTasks.remove(id);
     }
 
-    public EpicTask deleteEpicTaskId(int id) {
+    private EpicTask deleteEpicTaskId(int id) {
         return epics.remove(id);
     }
 
