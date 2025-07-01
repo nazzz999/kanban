@@ -95,10 +95,12 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Task is null");
             return;
         }
-        if (task.getStatus() == null) {
-            task.setStatus(TaskStatus.NEW);
+        switch (task.getType()) {
+            case TASK -> updateSimpleTask(task);
+            case SUB_TASK -> updateSubTask((SubTask) task);
+            case EPIC_TASK -> updateEpicTask((EpicTask) task);
+            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
-        tasks.put(task.getId(), task);
     }
 
     @Override
@@ -184,4 +186,39 @@ public class InMemoryTaskManager implements TaskManager {
         return subTask;
     }
 
+    private void updateSimpleTask(Task task) {
+        if (!tasks.containsKey(task.getId())){
+            throw new ValidationException("Task with id " + task.getId() + " does not exist.");
+        }
+        if (task.getStatus() == null) {
+            task.setStatus(TaskStatus.NEW);
+        }
+        tasks.put(task.getId(), task);
+    }
+
+    private void updateSubTask(SubTask subTask) {
+        if (!subTasks.containsKey(subTask.getId())) {
+            throw new ValidationException("Task with id " + subTask.getId() + " does not exist.");
+        }
+        int epicId = subTask.getEpic().getId();
+        if (!epics.containsKey(epicId)) {
+            throw new ValidationException("EpicTask with id " + epicId + " does not exist.");
+        }
+        subTasks.put(subTask.getId(), subTask);
+        EpicTask epic = epics.get(epicId);
+        if (!epic.getSubTasks().contains(subTask)) {
+            epic.addSubTask(subTask);
+        }
+        epic.updateStatus();
+    }
+
+    private void updateEpicTask(EpicTask epicTask) {
+        if (!epics.containsKey(epicTask.getId())) {
+            throw new ValidationException("Task with id " + epicTask.getId() + " does not exist.");
+        }
+        EpicTask existingEpic = epics.get(epicTask.getId());
+        existingEpic.setName(epicTask.getName());
+        existingEpic.setDescription(epicTask.getDescription());
+        existingEpic.updateStatus();
+    }
 }
