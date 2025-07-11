@@ -204,10 +204,14 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epics.containsKey(epicId)) {
             throw new ValidationException("EpicTask with id " + epicId + " does not exist.");
         }
-        subTasks.put(subTask.getId(), subTask);
+        SubTask existingSubTask = subTasks.get(subTask.getId());
+        existingSubTask.setName(subTask.getDescription());
+        existingSubTask.setStatus(subTask.getStatus());
+        existingSubTask.setEpic(subTask.getEpic());
+        subTasks.put(existingSubTask.getId(), existingSubTask);
         EpicTask epic = epics.get(epicId);
-        if (!epic.getSubTasks().contains(subTask)) {
-            epic.addSubTask(subTask);
+        if (!epic.getSubTasks().contains(existingSubTask)) {
+            epic.addSubTask(existingSubTask);
         }
         epic.updateStatus();
     }
