@@ -214,6 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubTask(existingSubTask);
         }
         epic.updateStatus();
+
     }
 
     private void updateEpicTask(EpicTask epicTask) {
