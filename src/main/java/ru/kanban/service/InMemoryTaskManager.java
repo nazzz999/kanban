@@ -197,25 +197,36 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateSubTask(SubTask subTask) {
-        if (!subTasks.containsKey(subTask.getId())) {
-            throw new ValidationException("Task with id " + subTask.getId() + " does not exist.");
+        int subTaskId = subTask.getId();
+
+        if (!subTasks.containsKey(subTaskId)) {
+            throw new ValidationException("SubTask with id " + subTaskId + " does not exist.");
         }
-        int epicId = subTask.getEpic().getId();
-        if (!epics.containsKey(epicId)) {
-            throw new ValidationException("EpicTask with id " + epicId + " does not exist.");
+
+        int newEpicId = subTask.getEpic().getId();
+        if (!epics.containsKey(newEpicId)) {
+            throw new ValidationException("EpicTask with id " + newEpicId + " does not exist.");
         }
-        SubTask existingSubTask = subTasks.get(subTask.getId());
-        existingSubTask.setName(subTask.getDescription());
+
+        SubTask existingSubTask = subTasks.get(subTaskId);
+        EpicTask oldEpic = existingSubTask.getEpic();
+        int oldEpicId = oldEpic.getId();
+        existingSubTask.setName(subTask.getName());
+        existingSubTask.setDescription(subTask.getDescription());
         existingSubTask.setStatus(subTask.getStatus());
         existingSubTask.setEpic(subTask.getEpic());
-        subTasks.put(existingSubTask.getId(), existingSubTask);
-        EpicTask epic = epics.get(epicId);
-        if (!epic.getSubTasks().contains(existingSubTask)) {
-            epic.addSubTask(existingSubTask);
-        }
-        epic.updateStatus();
 
+        if (oldEpicId != newEpicId) {
+            oldEpic.removeSubTasksList();
+            epics.get(newEpicId).addSubTask(existingSubTask);
+        }
+
+        epics.get(oldEpicId).updateStatus();
+        if (oldEpicId != newEpicId) {
+            epics.get(newEpicId).updateStatus();
+        }
     }
+
 
     private void updateEpicTask(EpicTask epicTask) {
         if (!epics.containsKey(epicTask.getId())) {
