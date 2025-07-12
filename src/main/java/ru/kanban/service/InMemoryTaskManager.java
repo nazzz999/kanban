@@ -220,7 +220,6 @@ public class InMemoryTaskManager implements TaskManager {
             oldEpic.removeSubTasksList();
             epics.get(newEpicId).addSubTask(existingSubTask);
         }
-
         epics.get(oldEpicId).updateStatus();
         if (oldEpicId != newEpicId) {
             epics.get(newEpicId).updateStatus();
