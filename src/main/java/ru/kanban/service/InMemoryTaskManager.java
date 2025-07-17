@@ -197,35 +197,39 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateSubTask(SubTask subTask) {
-        int subTaskId = subTask.getId();
+        if (subTask == null) {
+            throw new ValidationException("SubTask is null.");
+        }
 
+        int subTaskId   = subTask.getId();
         if (!subTasks.containsKey(subTaskId)) {
             throw new ValidationException("SubTask with id " + subTaskId + " does not exist.");
         }
 
-        int newEpicId = subTask.getEpic().getId();
+        int newEpicId   = subTask.getEpic().getId();
         if (!epics.containsKey(newEpicId)) {
             throw new ValidationException("EpicTask with id " + newEpicId + " does not exist.");
         }
 
-        SubTask existingSubTask = subTasks.get(subTaskId);
-        EpicTask oldEpic = existingSubTask.getEpic();
-        int oldEpicId = oldEpic.getId();
-        existingSubTask.setName(subTask.getName());
-        existingSubTask.setDescription(subTask.getDescription());
-        existingSubTask.setStatus(subTask.getStatus());
-        existingSubTask.setEpic(subTask.getEpic());
+        SubTask  storedSubTask = subTasks.get(subTaskId);
+        EpicTask oldEpic = storedSubTask.getEpic();
+        EpicTask newEpic = epics.get(newEpicId);
 
-        if (oldEpicId != newEpicId) {
-            oldEpic.removeSubTasksList();
-            epics.get(newEpicId).addSubTask(existingSubTask);
-        }
-        epics.get(oldEpicId).updateStatus();
-        if (oldEpicId != newEpicId) {
-            epics.get(newEpicId).updateStatus();
-        }
+        storedSubTask.setName(subTask.getName());
+        storedSubTask.setDescription(subTask.getDescription());
+        storedSubTask.setStatus(subTask.getStatus());
+
+        if (oldEpic.getId() != newEpicId) {
+            oldEpic.removeSubTasksList(storedSubTask);
+            newEpic.addSubTask(storedSubTask);
+            storedSubTask.setEpic(newEpic);
+            oldEpic.updateStatus();
+            newEpic.updateStatus();
+
+        } else {
+            oldEpic.updateStatus();
     }
-
+}
 
     private void updateEpicTask(EpicTask epicTask) {
         if (!epics.containsKey(epicTask.getId())) {

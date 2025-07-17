@@ -46,7 +46,7 @@ public class EpicTask extends Task {
         subTasks.remove(subTask);
     }
 
-    public void removeSubTasksList() {
+    public void removeSubTasksList(SubTask storedSubTask) {
         subTasks.clear();
     }
 
