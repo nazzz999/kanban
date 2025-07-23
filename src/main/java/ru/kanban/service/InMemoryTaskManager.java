@@ -132,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void deleteEpicTaskById(int id) {
         epics.remove(id);
-        subTasks.remove(id);
+        subTasks.values().removeIf(subTask -> subTask.getEpic().getId() == id);
     }
 
     private Optional<Task> addTask(Task task) {
