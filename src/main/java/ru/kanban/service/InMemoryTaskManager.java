@@ -110,10 +110,10 @@ public class InMemoryTaskManager implements TaskManager {
                 deleteTaskById(id);
             }
             case SUB_TASK -> {
-                deleteSubTaskId(id);
+                deleteSubTaskById(id);
             }
             case EPIC_TASK -> {
-                deleteEpicTaskId(id);
+                deleteEpicTaskById(id);
             }
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
@@ -123,11 +123,11 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
     }
 
-    private void deleteSubTaskId(int id) {
+    private void deleteSubTaskById(int id) {
         subTasks.remove(id);
     }
 
-    private void deleteEpicTaskId(int id) {
+    private void deleteEpicTaskById(int id) {
         epics.remove(id);
     }
 
