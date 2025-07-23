@@ -125,12 +125,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void deleteSubTaskById(int id) {
         SubTask subTask = (SubTask) subTasks.get(id);
+        if (subTask == null) {
+            throw new ValidationException("SubTask with id " + id + " does not exist.");
+        }
         EpicTask epicTask = subTask.getEpic();
         subTasks.remove(id);
         epicTask.updateStatus();
     }
 
     private void deleteEpicTaskById(int id) {
+        if (epics.remove(id) == null) {
+            throw new ValidationException("EpicTask with id " + id + " does not exist.");
+        }
         epics.remove(id);
         subTasks.values().removeIf(subTask -> subTask.getEpic().getId() == id);
     }
