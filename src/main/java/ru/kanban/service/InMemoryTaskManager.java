@@ -124,11 +124,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void deleteSubTaskById(int id) {
+        SubTask subTask = (SubTask) subTasks.get(id);
+        EpicTask epicTask = subTask.getEpic();
         subTasks.remove(id);
+        epicTask.updateStatus();
     }
 
     private void deleteEpicTaskById(int id) {
         epics.remove(id);
+        subTasks.remove(id);
     }
 
     private Optional<Task> addTask(Task task) {
