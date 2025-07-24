@@ -73,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskByIdAndType(Task task) {
+    public Optional<Task> getTaskByIdAndType(Task task) {
         TaskType type = task.getType();
         switch (type) {
             case TASK -> {
@@ -179,11 +179,11 @@ public class InMemoryTaskManager implements TaskManager {
         return Optional.ofNullable(tasks.get(id));
     }
 
-    private Optional<EpicTask> getEpicById(int id) {
+    private Optional<Task> getEpicById(int id) {
         return Optional.ofNullable(epics.get(id));
     }
 
-    private Optional<SubTask> getSubTaskById(int id) {
+    private Optional<Task> getSubTaskById(int id) {
         return Optional.ofNullable(subTasks.get(id));
     }
 
