@@ -92,8 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (task == null) {
-            System.out.println("Task is null");
-            return;
+            throw new ValidationException("Task cannot be null.");
         }
         switch (task.getType()) {
             case TASK -> updateSimpleTask(task);
