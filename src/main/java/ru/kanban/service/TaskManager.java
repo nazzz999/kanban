@@ -19,5 +19,5 @@ public interface TaskManager {
 
     void deleteTaskByIdAndType(int id,TaskType type);
 
-    void updateTask(Task task);
+    Optional<Task> updateTask(Task task);
 }

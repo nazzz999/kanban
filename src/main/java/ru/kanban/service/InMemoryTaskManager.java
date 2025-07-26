@@ -90,14 +90,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
-        if (task == null) {
-            throw new ValidationException("Task cannot be null.");
-        }
+    public Optional<Task> updateTask(Task task) {
         switch (task.getType()) {
-            case TASK -> updateSimpleTask(task);
-            case SUB_TASK -> updateSubTask((SubTask) task);
-            case EPIC_TASK -> updateEpicTask((EpicTask) task);
+            case TASK -> {
+                return updateSimpleTask(task);
+            }
+            case SUB_TASK -> {
+                return updateSubTask((SubTask) task);
+            }
+            case EPIC_TASK -> {
+                return updateEpicTask((EpicTask) task);
+            }
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
     }
@@ -186,22 +189,18 @@ public class InMemoryTaskManager implements TaskManager {
         return Optional.ofNullable(subTasks.get(id));
     }
 
-    private void updateSimpleTask(Task task) {
+    private Optional<Task> updateSimpleTask(Task task) {
         if (!tasks.containsKey(task.getId())){
             throw new ValidationException("Task with id " + task.getId() + " does not exist.");
         }
         if (task.getStatus() == null) {
             task.setStatus(TaskStatus.NEW);
         }
-        tasks.put(task.getId(), task);
+        return Optional.ofNullable(tasks.put(task.getId(), task));
     }
 
-    private void updateSubTask(SubTask subTask) {
-        if (subTask == null) {
-            throw new ValidationException("SubTask is null.");
-        }
-
-        int subTaskId   = subTask.getId();
+    private Optional<Task> updateSubTask(SubTask subTask) {
+        int subTaskId = subTask.getId();
         if (!subTasks.containsKey(subTaskId)) {
             throw new ValidationException("SubTask with id " + subTaskId + " does not exist.");
         }
@@ -229,9 +228,10 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             oldEpic.updateStatus();
     }
+        return Optional.ofNullable(newEpic);
 }
 
-    private void updateEpicTask(EpicTask epicTask) {
+    private Optional<Task> updateEpicTask(EpicTask epicTask) {
         if (!epics.containsKey(epicTask.getId())) {
             throw new ValidationException("Task with id " + epicTask.getId() + " does not exist.");
         }
@@ -239,5 +239,6 @@ public class InMemoryTaskManager implements TaskManager {
         existingEpic.setName(epicTask.getName());
         existingEpic.setDescription(epicTask.getDescription());
         existingEpic.updateStatus();
+        return Optional.of(existingEpic);
     }
 }
