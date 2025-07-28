@@ -1,7 +1,5 @@
 package ru.kanban.model;
 
-import java.util.Objects;
-
 public class SubTask extends Task {
     private EpicTask epic;
 

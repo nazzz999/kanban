@@ -11,7 +11,7 @@ public class EpicTask extends Task {
         super(id, name, description, status, taskType);
     }
 
-    public void updateStatus () {
+    public void updateStatus() {
         boolean taskNew = true;
         boolean taskDone = true;
         TaskStatus taskStatus = TaskStatus.IN_PROGRESS;

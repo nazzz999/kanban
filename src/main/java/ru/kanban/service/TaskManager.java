@@ -1,7 +1,6 @@
 package ru.kanban.service;
 
 import ru.kanban.model.Task;
-import ru.kanban.model.SubTask;
 import ru.kanban.model.TaskType;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public interface TaskManager {
 
     void deleteAllTasksByType(TaskType type);
 
-    void deleteTaskByIdAndType(int id,TaskType type);
+    void deleteTaskByIdAndType(int id, TaskType type);
 
     Task updateTask(Task task);
 }

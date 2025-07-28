@@ -190,7 +190,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Task updateSimpleTask(Task task) {
-        if (!tasks.containsKey(task.getId())){
+        if (!tasks.containsKey(task.getId())) {
             throw new ValidationException("Task with id " + task.getId() + " does not exist.");
         }
         if (task.getStatus() == null) {
