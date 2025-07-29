@@ -11,6 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, EpicTask> epics;
     private Map<Integer, SubTask> subTasks;
+    private LinkedList<Integer> historyTask = new LinkedList<>();
     private int generateId = 1;
 
     public InMemoryTaskManager() {
@@ -106,6 +107,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public List<Integer> getHistory() {
+        return new ArrayList<>(historyTask);
+    }
+
+    @Override
     public void deleteTaskByIdAndType(int id, TaskType type) {
         switch (type) {
             case TASK -> {
@@ -178,14 +184,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Optional<Task> getTaskById(int id) {
+        addTaskToHistory(id);
         return Optional.ofNullable(tasks.get(id));
     }
 
     private Optional<Task> getEpicById(int id) {
+        addTaskToHistory(id);
         return Optional.ofNullable(epics.get(id));
     }
 
     private Optional<Task> getSubTaskById(int id) {
+        addTaskToHistory(id);
         return Optional.ofNullable(subTasks.get(id));
     }
 
@@ -205,7 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new ValidationException("SubTask with id " + subTaskId + " does not exist.");
         }
 
-        int newEpicId   = subTask.getEpic().getId();
+        int newEpicId = subTask.getEpic().getId();
         if (!epics.containsKey(newEpicId)) {
             throw new ValidationException("EpicTask with id " + newEpicId + " does not exist.");
         }
@@ -240,5 +249,12 @@ public class InMemoryTaskManager implements TaskManager {
         existingEpic.setDescription(epicTask.getDescription());
         existingEpic.updateStatus();
         return existingEpic;
+    }
+
+    private void addTaskToHistory(int id) {
+        if (historyTask.size() >= 10) {
+            historyTask.removeFirst();
+        }
+        historyTask.addLast(id);
     }
 }

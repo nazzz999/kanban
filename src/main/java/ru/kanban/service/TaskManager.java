@@ -19,4 +19,6 @@ public interface TaskManager {
     void deleteTaskByIdAndType(int id, TaskType type);
 
     Task updateTask(Task task);
+
+    List<Integer> getHistory();
 }
