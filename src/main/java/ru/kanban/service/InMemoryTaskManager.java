@@ -11,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, EpicTask> epics;
     private Map<Integer, SubTask> subTasks;
-    private LinkedList<Integer> historyTask = new LinkedList<>();
+    private List<Task> historyTask = new LinkedList<>();
     private int generateId = 1;
 
     public InMemoryTaskManager() {
@@ -107,7 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Integer> getHistory() {
+    public List<Task> getHistory() {
         return new ArrayList<>(historyTask);
     }
 
@@ -184,17 +184,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Optional<Task> getTaskById(int id) {
-        addTaskToHistory(id);
+        addTaskToHistory(tasks.get(id));
         return Optional.ofNullable(tasks.get(id));
     }
 
     private Optional<Task> getEpicById(int id) {
-        addTaskToHistory(id);
+        addTaskToHistory(epics.get(id));
         return Optional.ofNullable(epics.get(id));
     }
 
     private Optional<Task> getSubTaskById(int id) {
-        addTaskToHistory(id);
+        addTaskToHistory(subTasks.get(id));
         return Optional.ofNullable(subTasks.get(id));
     }
 
@@ -251,10 +251,11 @@ public class InMemoryTaskManager implements TaskManager {
         return existingEpic;
     }
 
-    private void addTaskToHistory(int id) {
-        if (historyTask.size() >= 10) {
-            historyTask.removeFirst();
+    private void addTaskToHistory(Task task) {
+        LinkedList<Task> history = (LinkedList<Task>) historyTask;
+        if (history.size() >= 10) {
+            (history).removeFirst();
         }
-        historyTask.addLast(id);
+        (history).addLast(task);
     }
 }

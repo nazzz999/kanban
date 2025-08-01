@@ -20,5 +20,5 @@ public interface TaskManager {
 
     Task updateTask(Task task);
 
-    List<Integer> getHistory();
+    List<Task> getHistory();
 }
