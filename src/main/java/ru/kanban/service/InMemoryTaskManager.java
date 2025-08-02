@@ -184,18 +184,21 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Optional<Task> getTaskById(int id) {
-        addTaskToHistory(tasks.get(id));
-        return Optional.ofNullable(tasks.get(id));
+        Task task = tasks.get(id);
+        addTaskToHistory(task);
+        return Optional.ofNullable(task);
     }
 
     private Optional<Task> getEpicById(int id) {
-        addTaskToHistory(epics.get(id));
-        return Optional.ofNullable(epics.get(id));
+        EpicTask epicTask = epics.get(id);
+        addTaskToHistory(epicTask);
+        return Optional.ofNullable(epicTask);
     }
 
     private Optional<Task> getSubTaskById(int id) {
-        addTaskToHistory(subTasks.get(id));
-        return Optional.ofNullable(subTasks.get(id));
+        SubTask subTask = subTasks.get(id);
+        addTaskToHistory(subTask);
+        return Optional.ofNullable(subTask);
     }
 
     private Task updateSimpleTask(Task task) {
@@ -252,10 +255,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void addTaskToHistory(Task task) {
-        LinkedList<Task> history = (LinkedList<Task>) historyTask;
-        if (history.size() >= 10) {
-            (history).removeFirst();
+        if (historyTask.size() >= 10) {
+            (historyTask).remove(0);
         }
-        (history).addLast(task);
+        (historyTask).add(task);
     }
 }
