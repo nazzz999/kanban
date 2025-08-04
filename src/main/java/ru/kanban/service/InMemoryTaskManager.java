@@ -184,21 +184,30 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Optional<Task> getTaskById(int id) {
-        Task task = tasks.get(id);
-        addTaskToHistory(task);
-        return Optional.ofNullable(task);
+        if (tasks.containsKey(id)) {
+            Task task = tasks.get(id);
+            addTaskToHistory(task);
+            return Optional.of(task);
+        }
+        return Optional.empty();
     }
 
     private Optional<Task> getEpicById(int id) {
-        EpicTask epicTask = epics.get(id);
-        addTaskToHistory(epicTask);
-        return Optional.ofNullable(epicTask);
+        if (epics.containsKey(id)) {
+            EpicTask epicTask = epics.get(id);
+            addTaskToHistory(epicTask);
+            return Optional.of(epicTask);
+        }
+        return Optional.empty();
     }
 
     private Optional<Task> getSubTaskById(int id) {
-        SubTask subTask = subTasks.get(id);
-        addTaskToHistory(subTask);
-        return Optional.ofNullable(subTask);
+        if (subTasks.containsKey(id)) {
+            SubTask subTask = subTasks.get(id);
+            addTaskToHistory(subTask);
+            return Optional.of(subTask);
+        }
+        return Optional.empty();
     }
 
     private Task updateSimpleTask(Task task) {
