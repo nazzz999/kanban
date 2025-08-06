@@ -13,8 +13,8 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTasks;
     private List<Task> historyTask = new LinkedList<>();
     private int generateId = 1;
-    private final int SIZE_OF_THE_VIEWS_LIST = 10;
-    private final int ELEMENT_INDEX_IN_THE_LIST = 0;
+    private static final int SIZE_OF_THE_VIEWS_LIST = 10;
+    private static final int ELEMENT_INDEX_IN_THE_LIST = 0;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
