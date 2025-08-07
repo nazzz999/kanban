@@ -13,8 +13,8 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, SubTask> subTasks;
     private List<Task> historyTask = new LinkedList<>();
     private int generateId = 1;
-    private static final int SIZE_OF_THE_VIEWS_LIST = 10;
-    private static final int ELEMENT_INDEX_IN_THE_LIST = 0;
+    private static final int HISTORY_SIZE = 10;
+    private static final int FIRST_INDEX_IN_HISTORY = 0;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -266,8 +266,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void addTaskToHistory(Task task) {
-        if (historyTask.size() >= SIZE_OF_THE_VIEWS_LIST) {
-            historyTask.remove(ELEMENT_INDEX_IN_THE_LIST);
+        if (historyTask.size() >= HISTORY_SIZE) {
+            historyTask.remove(FIRST_INDEX_IN_HISTORY);
         }
         historyTask.add(task);
     }
