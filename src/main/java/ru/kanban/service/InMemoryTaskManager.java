@@ -11,10 +11,8 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, EpicTask> epics;
     private Map<Integer, SubTask> subTasks;
-    private List<Task> historyTask = new LinkedList<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
     private int generateId = 1;
-    private static final int HISTORY_SIZE = 10;
-    private static final int FIRST_INDEX_IN_HISTORY = 0;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -109,11 +107,6 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getHistory() {
-        return new ArrayList<>(historyTask);
-    }
-
-    @Override
     public void deleteTaskByIdAndType(int id, TaskType type) {
         switch (type) {
             case TASK -> {
@@ -190,7 +183,7 @@ public class InMemoryTaskManager implements TaskManager {
             return Optional.empty();
         }
         Task task = tasks.get(id);
-        addTaskToHistory(task);
+        historyManager.add(task);
         return Optional.of(task);
     }
 
@@ -199,7 +192,7 @@ public class InMemoryTaskManager implements TaskManager {
             return Optional.empty();
         }
         EpicTask epicTask = epics.get(id);
-        addTaskToHistory(epicTask);
+        historyManager.add(epicTask);
         return Optional.of(epicTask);
     }
 
@@ -208,7 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
             return Optional.empty();
         }
         SubTask subTask = subTasks.get(id);
-        addTaskToHistory(subTask);
+        historyManager.add(subTask);
         return Optional.of(subTask);
     }
 
@@ -263,12 +256,5 @@ public class InMemoryTaskManager implements TaskManager {
         existingEpic.setDescription(epicTask.getDescription());
         existingEpic.updateStatus();
         return existingEpic;
-    }
-
-    private void addTaskToHistory(Task task) {
-        if (historyTask.size() >= HISTORY_SIZE) {
-            historyTask.remove(FIRST_INDEX_IN_HISTORY);
-        }
-        historyTask.add(task);
     }
 }
