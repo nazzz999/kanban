@@ -10,7 +10,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private static final int HISTORY_SIZE = 10;
     private static final int FIRST_INDEX_IN_HISTORY = 0;
 
-
     @Override
     public void add(Task task) {
         if (historyTask.size() >= HISTORY_SIZE) {
