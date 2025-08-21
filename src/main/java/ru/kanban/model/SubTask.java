@@ -8,6 +8,10 @@ public class SubTask extends Task {
         this.epic = epic;
     }
 
+    public SubTask() {
+
+    }
+
     public EpicTask getEpic() {
         return epic;
     }

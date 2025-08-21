@@ -11,6 +11,10 @@ public class EpicTask extends Task {
         super(id, name, description, status, taskType);
     }
 
+    public EpicTask() {
+
+    }
+
     public void updateStatus() {
         boolean taskNew = true;
         boolean taskDone = true;
