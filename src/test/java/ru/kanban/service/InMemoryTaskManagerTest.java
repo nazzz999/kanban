@@ -109,4 +109,29 @@ class InMemoryTaskManagerTest {
         assertThat(theFoundSubTask.get().getId()).isEqualTo(subTask.getId());
         assertThat(theFoundSubTask.get().getTaskType()).isEqualTo(subTask.getType());
     }
+
+    @Test
+    void getTaskByIdAndTypeIsEmpty() {
+        Task task = newTask("Task");
+        task.setId(123);
+        Optional<Task> newTask = taskManager.getTaskByIdAndType(task);
+        assertThat(newTask).isEmpty();
+    }
+
+    @Test
+    void getEpicByIdAndTypeIsEmpty() {
+        EpicTask epicTask = newEpic("Epic");
+        epicTask.setId(123);
+        Optional<Task> newEpic = taskManager.getTaskByIdAndType(epicTask);
+        assertThat(newEpic).isEmpty();
+    }
+
+    @Test
+    void getSubTaskByIdAndTypeIsEmpty() {
+        EpicTask epicTask = newEpic("Epic");
+        SubTask subTask = newSubTask("SubTask", epicTask);
+        subTask.setId(123);
+        Optional<Task> newSubTask = taskManager.getTaskByIdAndType(subTask);
+        assertThat(newSubTask).isEmpty();
+    }
 }
