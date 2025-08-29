@@ -12,7 +12,7 @@ public interface TaskManager {
 
     List<Task> getAllTasksByType(TaskType type);
 
-    Optional<Task> getTaskByIdAndType(Task task);
+    Optional<Task> getTaskByIdAndType(int id, TaskType type);
 
     void deleteAllTasksByType(TaskType type);
 

@@ -5,6 +5,7 @@ import ru.kanban.model.*;
 
 import java.util.*;
 
+import static ru.kanban.model.TaskType.*;
 import static ru.kanban.util.Constants.INCORRECT_TASK_TYPE_MESSAGE;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -74,20 +75,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Optional<Task> getTaskByIdAndType(Task task) {
-        TaskType type = task.getType();
-        switch (type) {
-            case TASK -> {
-                return getTaskById(task.getId());
-            }
-            case SUB_TASK -> {
-                return getSubTaskById(task.getId());
-            }
-            case EPIC_TASK -> {
-                return getEpicById(task.getId());
-            }
+    public Optional<Task> getTaskByIdAndType(int id,TaskType type) {
+        return switch (type) {
+            case TASK -> getTaskById(id);
+            case SUB_TASK -> getSubTaskById(id);
+            case EPIC_TASK -> getEpicById(id);
             default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
-        }
+        };
     }
 
     @Override
