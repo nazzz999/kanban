@@ -108,6 +108,28 @@ class InMemoryTaskManagerTest {
         assertThat(newSubTask).isEmpty();
     }
 
+    @Test
+    void deleteAllTasksByTypeTask() {
+        Task task = taskManager.createTask(newTask("Task")).get();
+        taskManager.deleteAllTasksByType(task.getType());
+        assertThat(taskManager.getAllTasksByType(TaskType.TASK)).isEmpty();
+    }
+
+    @Test
+    void deleteAllTasksByTypeEpicTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        taskManager.deleteAllTasksByType(epicTask.getType());
+        assertThat(taskManager.getAllTasksByType(TaskType.EPIC_TASK)).isEmpty();
+    }
+
+    @Test
+    void deleteAllTasksByTypeSubTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        taskManager.deleteAllTasksByType(subTask.getType());
+        assertThat(taskManager.getAllTasksByType(TaskType.SUB_TASK)).isEmpty();
+    }
+
     private Task newTask(String name) {
         Task task = new Task();
         task.setName(name);
