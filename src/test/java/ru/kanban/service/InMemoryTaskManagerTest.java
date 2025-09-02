@@ -3,6 +3,7 @@ package ru.kanban.service;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.kanban.exception.ValidationException;
 import ru.kanban.model.*;
 
 import java.net.URI;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest {
 
@@ -84,6 +86,31 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void getAllTasksByTypeTask() {
+        Task task = taskManager.createTask(newTask("Task")).get();
+        List<Task> theFoundTask = taskManager.getAllTasksByType(task.getType());
+        assertThat(theFoundTask.get(0).getId()).isEqualTo(task.getId());
+        assertThat(theFoundTask.get(0).getType()).isEqualTo(task.getType());
+    }
+
+    @Test
+    void getAllTasksByTypeEpic() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        List<Task> theFoundEpic = taskManager.getAllTasksByType(epicTask.getType());
+        assertThat(theFoundEpic.get(0).getId()).isEqualTo(epicTask.getId());
+        assertThat(theFoundEpic.get(0).getType()).isEqualTo(epicTask.getType());
+    }
+
+    @Test
+    void getAllTasksByTypeSubTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        List<Task> theFoundSubTask = taskManager.getAllTasksByType(subTask.getType());
+        assertThat(theFoundSubTask.get(0).getId()).isEqualTo(subTask.getId());
+        assertThat(theFoundSubTask.get(0).getType()).isEqualTo(subTask.getType());
+    }
+
+    @Test
     void getTaskByIdAndTypeIsEmpty() {
         Task task = newTask("Task");
         task.setId(123);
@@ -128,6 +155,54 @@ class InMemoryTaskManagerTest {
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         taskManager.deleteAllTasksByType(subTask.getType());
         assertThat(taskManager.getAllTasksByType(TaskType.SUB_TASK)).isEmpty();
+    }
+
+    @Test
+    void deleteTasksByIdAndTypeTask() {
+        Task task = taskManager.createTask(newTask("Task")).get();
+        taskManager.deleteTaskByIdAndType(task.getId(), task.getType());
+        assertThat(taskManager.getTaskByIdAndType(task.getId(), task.getType())).isEmpty();
+    }
+
+    @Test
+    void deleteTasksByIdAndTypeEpic() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        taskManager.deleteTaskByIdAndType(epicTask.getId(), epicTask.getType());
+        assertThat(taskManager.getTaskByIdAndType(epicTask.getId(), epicTask.getType())).isEmpty();
+    }
+
+    @Test
+    void deleteTasksByIdAndTypeSubTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        taskManager.deleteTaskByIdAndType(subTask.getId(), subTask.getType());
+        assertThat(taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType())).isEmpty();
+    }
+
+    @Test
+    void updateTaskByTypeTask() {
+        Task task = taskManager.createTask(newTask("Task")).get();
+        task.setDescription("Updated");
+        Task taskUpdated = taskManager.updateTask(task);
+        assertThat(taskUpdated.getDescription()).isEqualTo("Updated");
+    }
+
+    @Test
+    void updateTasksByTypeEpic() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        epicTask.setDescription("Updated Epic");
+        EpicTask epicTaskUpdated = (EpicTask) taskManager.updateTask(epicTask);
+        assertThat(epicTaskUpdated.getDescription()).isEqualTo("Updated Epic");
+    }
+
+    @Test
+    void updateTasksByTypeSubTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        subTask.setDescription("Updated SubTask");
+        taskManager.updateTask(subTask);
+        SubTask subTaskUpdated = (SubTask) taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType()).get();
+        assertThat(subTaskUpdated.getDescription()).isEqualTo("Updated SubTask");
     }
 
     private Task newTask(String name) {
