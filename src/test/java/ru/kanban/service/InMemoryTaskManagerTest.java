@@ -250,8 +250,8 @@ class InMemoryTaskManagerTest {
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         subTask.setStatus(TaskStatus.DONE);
         taskManager.updateTask(subTask);
-        EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), epicTask.getType()).get();
-        assertThat(epicTaskUpdated.getStatus()).isEqualTo(subTask.getStatus());
+        EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), TaskType.EPIC_TASK).get();
+        assertThat(epicTaskUpdated.getStatus()).isEqualTo(TaskStatus.DONE);
     }
 
     private Task newTask(String name) {

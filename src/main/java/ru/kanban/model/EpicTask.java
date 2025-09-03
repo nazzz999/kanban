@@ -31,10 +31,10 @@ public class EpicTask extends Task {
             }
         }
         if (taskNew) {
-            taskStatus = TaskStatus.NEW;
+            this.status = TaskStatus.NEW;
         }
         if (taskDone) {
-            taskStatus = TaskStatus.DONE;
+            this.status = TaskStatus.DONE;
         }
     }
 
