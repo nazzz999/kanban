@@ -60,6 +60,8 @@ class InMemoryTaskManagerTest {
     @Test
     void getTaskByIdAndType() {
         Task task = (Task) taskManager.createTask(newTask("Task")).get();
+        Task taskTwo = (Task) taskManager.createTask(newTask("Task Two")).get();
+        EpicTask epicTask =(EpicTask) taskManager.createTask(newEpic("Epic")).get();
         Optional<Task> theFoundTask = taskManager.getTaskByIdAndType(task.getId(), task.getType());
         assertThat(theFoundTask).isPresent();
         assertThat(theFoundTask.get().getId()).isEqualTo(task.getId());
@@ -69,16 +71,22 @@ class InMemoryTaskManagerTest {
     @Test
     void getEpicByIdAndType() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
-        Optional<Task> theFoundEpic = taskManager.getTaskByIdAndType(epicTask.getId(), epicTask.getTaskType());
+        EpicTask epicTaskTwo = (EpicTask) taskManager.createTask(newEpic("Epic Two")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTaskTwo)).get();
+        Task task = taskManager.createTask(newTask("Task")).get();
+        Optional<Task> theFoundEpic = taskManager.getTaskByIdAndType(epicTaskTwo.getId(), epicTaskTwo.getTaskType());
         assertThat(theFoundEpic).isPresent();
-        assertThat(theFoundEpic.get().getId()).isEqualTo(epicTask.getId());
-        assertThat(theFoundEpic.get().getTaskType()).isEqualTo(epicTask.getType());
+        assertThat(theFoundEpic.get().getId()).isEqualTo(epicTaskTwo.getId());
+        assertThat(theFoundEpic.get().getTaskType()).isEqualTo(epicTaskTwo.getType());
     }
 
     @Test
     void getSubTaskByIdAndType() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        EpicTask epicTaskTwo = (EpicTask) taskManager.createTask(newEpic("Epic Two")).get();
+        SubTask subTaskTwo = (SubTask) taskManager.createTask(newSubTask("SubTask Two", epicTaskTwo)).get();
+        Task task = taskManager.createTask(newTask("Task")).get();
         Optional<Task> theFoundSubTask = taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType());
         assertThat(theFoundSubTask).isPresent();
         assertThat(theFoundSubTask.get().getId()).isEqualTo(subTask.getId());
@@ -88,26 +96,40 @@ class InMemoryTaskManagerTest {
     @Test
     void getAllTasksByTypeTask() {
         Task task = taskManager.createTask(newTask("Task")).get();
+        Task taskTwo = taskManager.createTask(newTask("Task Two")).get();
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         List<Task> theFoundTask = taskManager.getAllTasksByType(task.getType());
         assertThat(theFoundTask.get(0).getId()).isEqualTo(task.getId());
         assertThat(theFoundTask.get(0).getType()).isEqualTo(task.getType());
+        assertThat(theFoundTask.get(1).getId()).isEqualTo(taskTwo.getId());
+        assertThat(theFoundTask.get(1).getType()).isEqualTo(taskTwo.getType());
+        assertThat(theFoundTask).hasSize(2);
     }
 
     @Test
     void getAllTasksByTypeEpic() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        EpicTask epicTaskTwo = (EpicTask) taskManager.createTask(newEpic("Epic Two")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTaskTwo)).get();
         List<Task> theFoundEpic = taskManager.getAllTasksByType(epicTask.getType());
         assertThat(theFoundEpic.get(0).getId()).isEqualTo(epicTask.getId());
         assertThat(theFoundEpic.get(0).getType()).isEqualTo(epicTask.getType());
+        assertThat(theFoundEpic.get(1).getId()).isEqualTo(epicTaskTwo.getId());
+        assertThat(theFoundEpic).hasSize(2);
     }
 
     @Test
     void getAllTasksByTypeSubTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        EpicTask epicTaskTwo = (EpicTask) taskManager.createTask(newEpic("Epic Two")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        SubTask subTaskTwo = (SubTask) taskManager.createTask(newSubTask("SubTask Two", epicTaskTwo)).get();
         List<Task> theFoundSubTask = taskManager.getAllTasksByType(subTask.getType());
         assertThat(theFoundSubTask.get(0).getId()).isEqualTo(subTask.getId());
         assertThat(theFoundSubTask.get(0).getType()).isEqualTo(subTask.getType());
+        assertThat(theFoundSubTask.get(1).getId()).isEqualTo(subTaskTwo.getId());
+        assertThat(theFoundSubTask.get(1).getType()).isEqualTo(subTaskTwo.getType());
+        assertThat(theFoundSubTask).hasSize(2);
     }
 
     @Test
@@ -138,6 +160,8 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteAllTasksByTypeTask() {
         Task task = taskManager.createTask(newTask("Task")).get();
+        Task taskTwo = taskManager.createTask(newTask("Task Two")).get();
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         taskManager.deleteAllTasksByType(task.getType());
         assertThat(taskManager.getAllTasksByType(TaskType.TASK)).isEmpty();
     }
@@ -145,14 +169,18 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteAllTasksByTypeEpicTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        EpicTask epicTaskTwo = (EpicTask) taskManager.createTask(newEpic("Epic Two")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTaskTwo)).get();
         taskManager.deleteAllTasksByType(epicTask.getType());
         assertThat(taskManager.getAllTasksByType(TaskType.EPIC_TASK)).isEmpty();
+        assertThat(taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType())).isEmpty();
     }
 
     @Test
     void deleteAllTasksByTypeSubTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        SubTask subTaskTwo = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         taskManager.deleteAllTasksByType(subTask.getType());
         assertThat(taskManager.getAllTasksByType(TaskType.SUB_TASK)).isEmpty();
     }
@@ -167,8 +195,10 @@ class InMemoryTaskManagerTest {
     @Test
     void deleteTasksByIdAndTypeEpic() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         taskManager.deleteTaskByIdAndType(epicTask.getId(), epicTask.getType());
         assertThat(taskManager.getTaskByIdAndType(epicTask.getId(), epicTask.getType())).isEmpty();
+        assertThat(taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType())).isEmpty();
     }
 
     @Test
@@ -191,8 +221,10 @@ class InMemoryTaskManagerTest {
     void updateTasksByTypeEpic() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         epicTask.setDescription("Updated Epic");
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         EpicTask epicTaskUpdated = (EpicTask) taskManager.updateTask(epicTask);
         assertThat(epicTaskUpdated.getDescription()).isEqualTo("Updated Epic");
+        assertThat(subTask.getEpic()).isEqualTo(epicTaskUpdated);
     }
 
     @Test
@@ -203,6 +235,23 @@ class InMemoryTaskManagerTest {
         taskManager.updateTask(subTask);
         SubTask subTaskUpdated = (SubTask) taskManager.getTaskByIdAndType(subTask.getId(), subTask.getType()).get();
         assertThat(subTaskUpdated.getDescription()).isEqualTo("Updated SubTask");
+    }
+
+    @Test
+    void updateTasksWhenMissingThrows() {
+        Task task = newTask("Task");
+        task.setId(123);
+        assertThrows(ValidationException.class, () -> taskManager.updateTask(task));
+    }
+
+    @Test
+    void epicsChangeOfStatus() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        subTask.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask);
+        EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), epicTask.getType()).get();
+        assertThat(epicTaskUpdated.getStatus()).isEqualTo(subTask.getStatus());
     }
 
     private Task newTask(String name) {
