@@ -50,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
             case SUB_TASK -> {
                 subTasks.clear();
                 for (EpicTask epicTask : epics.values()) {
+                    epicTask.removeSubTasksList();
                     epicTask.updateStatus();
                 }
             }
@@ -229,7 +230,7 @@ public class InMemoryTaskManager implements TaskManager {
         storedSubTask.setStatus(subTask.getStatus());
 
         if (oldEpic.getId() != newEpicId) {
-            oldEpic.removeSubTasksList(storedSubTask);
+            oldEpic.removeSubTasksList();
             newEpic.addSubTask(storedSubTask);
             storedSubTask.setEpic(newEpic);
             oldEpic.updateStatus();

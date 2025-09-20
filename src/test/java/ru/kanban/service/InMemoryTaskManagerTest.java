@@ -245,13 +245,34 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void epicsChangeOfStatus() {
+    void epicsChangeOfStatusDoneWhenUpdateTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
         subTask.setStatus(TaskStatus.DONE);
         taskManager.updateTask(subTask);
         EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), TaskType.EPIC_TASK).get();
         assertThat(epicTaskUpdated.getStatus()).isEqualTo(TaskStatus.DONE);
+    }
+
+    @Test
+    void epicsChangeOfStatusInProgressWhenUpdateTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        subTask.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(subTask);
+        EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), TaskType.EPIC_TASK).get();
+        assertThat(epicTaskUpdated.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
+    }
+
+    @Test
+    void epicsChangeOfStatusInProgressWhenDeleteTask() {
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
+        subTask.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask);
+        taskManager.deleteAllTasksByType(TaskType.SUB_TASK);
+        EpicTask epicTaskUpdated = (EpicTask) taskManager.getTaskByIdAndType(epicTask.getId(), TaskType.EPIC_TASK).get();
+        assertThat(epicTaskUpdated.getStatus()).isEqualTo(TaskStatus.NEW);
     }
 
     private Task newTask(String name) {
