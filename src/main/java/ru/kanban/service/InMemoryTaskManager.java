@@ -5,7 +5,6 @@ import ru.kanban.model.*;
 
 import java.util.*;
 
-import static ru.kanban.model.TaskType.*;
 import static ru.kanban.util.Constants.INCORRECT_TASK_TYPE_MESSAGE;
 
 public class InMemoryTaskManager implements TaskManager {
