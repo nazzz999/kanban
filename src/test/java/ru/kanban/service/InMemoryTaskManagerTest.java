@@ -1,12 +1,10 @@
 package ru.kanban.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.kanban.exception.ValidationException;
 import ru.kanban.model.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +59,7 @@ class InMemoryTaskManagerTest {
     void getTaskByIdAndType() {
         Task task = (Task) taskManager.createTask(newTask("Task")).get();
         Task taskTwo = (Task) taskManager.createTask(newTask("Task Two")).get();
-        EpicTask epicTask =(EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         Optional<Task> theFoundTask = taskManager.getTaskByIdAndType(task.getId(), task.getType());
         assertThat(theFoundTask).isPresent();
         assertThat(theFoundTask.get().getId()).isEqualTo(task.getId());

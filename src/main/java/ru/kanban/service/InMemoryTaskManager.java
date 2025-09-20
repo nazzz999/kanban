@@ -76,7 +76,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Optional<Task> getTaskByIdAndType(int id,TaskType type) {
+    public Optional<Task> getTaskByIdAndType(int id, TaskType type) {
         return switch (type) {
             case TASK -> getTaskById(id);
             case SUB_TASK -> getSubTaskById(id);

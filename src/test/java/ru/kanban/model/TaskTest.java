@@ -17,7 +17,7 @@ class TaskTest {
     }
 
     @Test
-    void TaskGetterIdZero(){
+    void TaskGetterIdZero() {
         Task task = new Task("HomeWork", "Tomorrow", TaskStatus.NEW, TaskType.TASK);
         assertThat(task.getId()).isZero();
         assertThat(task.getName()).isEqualTo("HomeWork");
