@@ -25,9 +25,15 @@ public class EpicTask extends Task {
         }
         for (SubTask subTask : subTasks) {
             TaskStatus s = subTask.getStatus();
-            if (s != TaskStatus.NEW)  taskNew  = false;
-            if (s != TaskStatus.DONE) taskDone = false;
-            if (!taskNew && !taskDone) break;
+            if (s != TaskStatus.NEW) {
+                taskNew = false;
+            }
+            if (s != TaskStatus.DONE) {
+                taskDone = false;
+            }
+            if (!taskNew && !taskDone) {
+                break;
+            }
         }
 
         if (taskNew) {
