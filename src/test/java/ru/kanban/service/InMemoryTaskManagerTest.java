@@ -243,6 +243,58 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void updateTaskWhenTypeNullMissingThrows() {
+        Task task = new Task();
+        assertThrows(ValidationException.class, () -> taskManager.updateTask(task));
+    }
+
+    @Test
+    void updateEpicTaskWhenMissingThrows() {
+        EpicTask epicTask = newEpic("Epic");
+        epicTask.setId(999);
+        assertThrows(ValidationException.class, () -> taskManager.updateTask(epicTask));
+    }
+
+    @Test
+    void updateSubTask_whenMissingId_throws() {
+        EpicTask epic = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
+        SubTask subTask = newSubTask("S", epic);
+        subTask.setId(888);
+        assertThrows(ValidationException.class, () -> taskManager.updateTask(subTask));
+    }
+
+    @Test
+    void deleteTaskByIdAndTypeWhenMissingThrows() {
+        assertThrows(ValidationException.class,
+                () -> taskManager.deleteTaskByIdAndType(999, TaskType.TASK));
+    }
+
+    @Test
+    void deleteTaskByIdAndTypeEpicMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(2, TaskType.EPIC_TASK));
+    }
+
+    @Test
+    void deleteTaskByIdAndTypeSubTaskMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(3, TaskType.SUB_TASK));
+    }
+
+    @Test
+    void createTaskWhenTaskNullThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.createTask(null));
+    }
+
+    @Test
+    void getAllTasksByTypeWhenTypeNullThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.getAllTasksByType(null));
+    }
+
+    @Test
+    void getTaskByIdAndTypeWhenMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.getTaskByIdAndType(1, null));
+    }
+
+    @Test
     void epicsChangeOfStatusDoneWhenUpdateTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();

@@ -22,18 +22,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasksByType(TaskType type) {
-        switch (type) {
-            case TASK -> {
-                return new ArrayList<>(tasks.values());
-            }
-            case SUB_TASK -> {
-                return new ArrayList<>(subTasks.values());
-            }
-            case EPIC_TASK -> {
-                return new ArrayList<>(epics.values());
-            }
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        if (type == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
+       return switch (type) {
+            case TASK -> new ArrayList<>(tasks.values());
+            case SUB_TASK -> new ArrayList<>(subTasks.values());
+            case EPIC_TASK -> new ArrayList<>(epics.values());
+        };
     }
 
     @Override
@@ -59,28 +55,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Optional<Task> createTask(Task task) {
-        TaskType type = task.getType();
-        switch (type) {
-            case TASK -> {
-                return addTask(task);
-            }
-            case SUB_TASK -> {
-                return createSubTask(task);
-            }
-            case EPIC_TASK -> {
-                return createEpicTask(task);
-            }
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        if (task == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
+        TaskType type = task.getType();
+         return switch (type) {
+            case TASK -> addTask(task);
+            case SUB_TASK -> createSubTask(task);
+            case EPIC_TASK -> createEpicTask(task);
+        };
     }
 
     @Override
     public Optional<Task> getTaskByIdAndType(int id, TaskType type) {
+        if (type == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
         return switch (type) {
             case TASK -> getTaskById(id);
             case SUB_TASK -> getSubTaskById(id);
             case EPIC_TASK -> getEpicById(id);
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         };
     }
 

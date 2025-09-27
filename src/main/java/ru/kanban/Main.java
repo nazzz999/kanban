@@ -15,5 +15,6 @@ public class Main {
         TaskManager taskManager = new InMemoryTaskManager();
         Task task = new Task("Programming tasks", "Solve 10 tasks", TaskStatus.NEW, TaskType.TASK);
         System.out.println(taskManager.createTask(task));
+        System.out.println(taskManager.getAllTasksByType(null));
     }
 }
