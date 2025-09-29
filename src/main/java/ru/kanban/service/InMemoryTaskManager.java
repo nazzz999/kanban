@@ -34,6 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasksByType(TaskType type) {
+        if (type == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
         switch (type) {
             case TASK -> {
                 tasks.clear();
@@ -49,7 +52,6 @@ public class InMemoryTaskManager implements TaskManager {
                     epicTask.updateStatus();
                 }
             }
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
         }
     }
 
@@ -80,7 +82,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task updateTask(Task task) {
-        switch (task.getType()) {
+        if (task == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
+        TaskType type = task.getType();
+        switch (type) {
             case TASK -> {
                 return updateSimpleTask(task);
             }
@@ -96,17 +102,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskByIdAndType(int id, TaskType type) {
+        if (type == null) {
+            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+        }
         switch (type) {
-            case TASK -> {
-                deleteTaskById(id);
-            }
-            case SUB_TASK -> {
-                deleteSubTaskById(id);
-            }
-            case EPIC_TASK -> {
-                deleteEpicTaskById(id);
-            }
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+            case TASK -> deleteTaskById(id);
+            case SUB_TASK -> deleteSubTaskById(id);
+            case EPIC_TASK -> deleteEpicTaskById(id);
         }
     }
 

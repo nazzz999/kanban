@@ -295,6 +295,21 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    void deleteTaskByIdAndTypeSubTaskWhenTaskNullMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(2, null));
+    }
+
+    @Test
+    void updateTaskWhenTaskNullMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.updateTask(null));
+    }
+
+    @Test
+    void deleteAllTaskByTypeSubTaskWhenTaskNullMissingThrows() {
+        assertThrows(ValidationException.class, () -> taskManager.deleteAllTasksByType(null));
+    }
+
+    @Test
     void epicsChangeOfStatusDoneWhenUpdateTask() {
         EpicTask epicTask = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
         SubTask subTask = (SubTask) taskManager.createTask(newSubTask("SubTask", epicTask)).get();
