@@ -5,6 +5,7 @@ import ru.kanban.model.*;
 
 import java.util.*;
 
+import static ru.kanban.util.Constants.ENTITY_IS_NULL;
 import static ru.kanban.util.Constants.INCORRECT_TASK_TYPE_MESSAGE;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -58,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Optional<Task> createTask(Task task) {
         if (task == null) {
-            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+            throw new ValidationException(ENTITY_IS_NULL);
         }
         TaskType type = task.getType();
          return switch (type) {
@@ -83,21 +84,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task updateTask(Task task) {
         if (task == null) {
-            throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+            throw new ValidationException(ENTITY_IS_NULL);
         }
         TaskType type = task.getType();
         switch (type) {
-            case TASK -> {
-                return updateSimpleTask(task);
-            }
-            case SUB_TASK -> {
-                return updateSubTask((SubTask) task);
-            }
-            case EPIC_TASK -> {
-                return updateEpicTask((EpicTask) task);
-            }
-            default -> throw new ValidationException(INCORRECT_TASK_TYPE_MESSAGE);
+            case TASK -> updateSimpleTask(task);
+            case SUB_TASK -> updateSubTask((SubTask) task);
+            case EPIC_TASK -> updateEpicTask((EpicTask) task);
         }
+        return task;
     }
 
     @Override

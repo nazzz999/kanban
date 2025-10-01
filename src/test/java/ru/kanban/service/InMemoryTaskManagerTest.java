@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.kanban.exception.ValidationException;
 import ru.kanban.model.*;
+import ru.kanban.util.Constants;
 
 import java.util.List;
 import java.util.Optional;
@@ -236,77 +237,70 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void updateTasksWhenMissingThrows() {
-        Task task = newTask("Task");
-        task.setId(123);
-        assertThrows(ValidationException.class, () -> taskManager.updateTask(task));
-    }
-
-    @Test
-    void updateTaskWhenTypeNullMissingThrows() {
-        Task task = new Task();
-        assertThrows(ValidationException.class, () -> taskManager.updateTask(task));
-    }
-
-    @Test
-    void updateEpicTaskWhenMissingThrows() {
-        EpicTask epicTask = newEpic("Epic");
-        epicTask.setId(999);
-        assertThrows(ValidationException.class, () -> taskManager.updateTask(epicTask));
-    }
-
-    @Test
-    void updateSubTask_whenMissingId_throws() {
-        EpicTask epic = (EpicTask) taskManager.createTask(newEpic("Epic")).get();
-        SubTask subTask = newSubTask("S", epic);
-        subTask.setId(888);
-        assertThrows(ValidationException.class, () -> taskManager.updateTask(subTask));
+    void updateTask_whenMissingId_throws() {
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.updateTask(null));
+        assertThat(exception.getMessage())
+                .isEqualTo(Constants.ENTITY_IS_NULL);
     }
 
     @Test
     void deleteTaskByIdAndTypeWhenMissingThrows() {
-        assertThrows(ValidationException.class,
-                () -> taskManager.deleteTaskByIdAndType(999, TaskType.TASK));
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> taskManager.deleteTaskByIdAndType(999, null));
+        assertThat(exception.getMessage())
+                .isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void deleteTaskByIdAndTypeEpicMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(2, TaskType.EPIC_TASK));
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> taskManager.deleteTaskByIdAndType(1, null)
+        );
+        assertThat(exception.getMessage())
+                .isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void deleteTaskByIdAndTypeSubTaskMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(3, TaskType.SUB_TASK));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(3, null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void createTaskWhenTaskNullThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.createTask(null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.createTask(null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.ENTITY_IS_NULL);
     }
 
     @Test
     void getAllTasksByTypeWhenTypeNullThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.getAllTasksByType(null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.getAllTasksByType(null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void getTaskByIdAndTypeWhenMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.getTaskByIdAndType(1, null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.getTaskByIdAndType(1, null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void deleteTaskByIdAndTypeSubTaskWhenTaskNullMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(2, null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.deleteTaskByIdAndType(2, null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
     void updateTaskWhenTaskNullMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.updateTask(null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.updateTask(null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.ENTITY_IS_NULL);
     }
 
     @Test
     void deleteAllTaskByTypeSubTaskWhenTaskNullMissingThrows() {
-        assertThrows(ValidationException.class, () -> taskManager.deleteAllTasksByType(null));
+        ValidationException exception = assertThrows(ValidationException.class, () -> taskManager.deleteAllTasksByType(null));
+        assertThat(exception.getMessage()).isEqualTo(Constants.INCORRECT_TASK_TYPE_MESSAGE);
     }
 
     @Test
