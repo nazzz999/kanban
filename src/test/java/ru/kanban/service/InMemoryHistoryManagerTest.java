@@ -73,7 +73,7 @@ class InMemoryHistoryManagerTest {
     void addTaskKeepsHistoryWhenLimitIsExceeded() {
         Task[] tasks = new Task[11];
         for (int i = 0; i < 11; i++) {
-            tasks[i] = new Task(i + 1,"Task" + (i + 1));
+            tasks[i] = new Task(i + 1, "Task" + (i + 1));
             history.add(tasks[i]);
         }
         List<Task> historyList = history.getHistory();
