@@ -29,7 +29,7 @@ class InMemoryHistoryManagerTest {
     @Test
     void addTasksIsHistory() {
         Task taskOne = new Task(1, "Task one");
-        Task taskTwo = new Task(2,"Task two");
+        Task taskTwo = new Task(2, "Task two");
         Task taskThree = new Task(3, "Task three");
         history.add(taskOne);
         history.add(taskTwo);
