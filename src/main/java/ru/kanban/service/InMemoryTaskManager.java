@@ -112,6 +112,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new ValidationException("Task with id " + id + " does not exist.");
         }
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     private void deleteSubTaskById(int id) {
@@ -122,6 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
         EpicTask epicTask = subTask.getEpic();
         subTasks.remove(id);
         epicTask.updateStatus();
+        historyManager.remove(id);
     }
 
     private void deleteEpicTaskById(int id) {
@@ -130,6 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epics.remove(id);
         subTasks.values().removeIf(subTask -> subTask.getEpic().getId() == id);
+        historyManager.remove(id);
     }
 
     private Optional<Task> addTask(Task task) {
