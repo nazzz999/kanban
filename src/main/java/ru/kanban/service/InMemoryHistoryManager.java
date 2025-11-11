@@ -7,7 +7,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private CustomLinkedList<Task> historyList = new CustomLinkedList<>();
     private Map<Integer, Node<Task>> historyMap = new HashMap<>();
-    private static final int HISTORY_SIZE = 10;
 
     @Override
     public void add(Task task) {
@@ -17,10 +16,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         Node<Task> newNode = historyList.linkLast(task);
         historyMap.put(task.getId(), newNode);
-        if (historyMap.size() > HISTORY_SIZE) {
-            Node<Task> firstNode = historyList.removeFirst();
-            historyMap.remove(firstNode.task.getId());
-        }
     }
 
     @Override

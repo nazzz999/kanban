@@ -40,20 +40,6 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addTaskIsHistoryWhenHistorySize10() {
-        Task[] task = new Task [11];
-        for (int i = 0; i < 11; i++) {
-            task[i] = newTask("T" + (i + 1));
-            task[i].setId(i + 1);
-            history.add(task[i]);
-        }
-        List<Task> historyList = history.getHistory();
-        assertThat(historyList).hasSize(10);
-        assertThat(historyList.get(0)).isEqualTo(task[1]);
-        assertThat(historyList.get(9)).isEqualTo(task[10]);
-    }
-
-    @Test
     void removeTaskFromHistory() {
         Task task1 = newTask("Task 1");
         Task task2 = newTask("Task 2");
@@ -67,22 +53,6 @@ class InMemoryHistoryManagerTest {
 
         assertThat(historyList).doesNotContain(task1);
         assertThat(historyList).contains(task2);
-    }
-
-    @Test
-    void addTaskKeepsHistoryWhenLimitIsExceeded() {
-        Task[] tasks = new Task[11];
-        for (int i = 0; i < 11; i++) {
-            tasks[i] = new Task(i + 1, "Task" + (i + 1));
-            history.add(tasks[i]);
-        }
-        List<Task> historyList = history.getHistory();
-
-        assertThat(historyList).hasSize(10);
-
-        assertThat(historyList).doesNotContain(tasks[0]);
-
-        assertThat(historyList.get(9)).isEqualTo(tasks[10]);
     }
 
     private Task newTask(String name) {
